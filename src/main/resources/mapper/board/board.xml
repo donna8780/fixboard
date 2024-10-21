@@ -32,4 +32,10 @@
         FROM board
     </select>
 
+    <select id="deleteBoard">
+        delete from board where id = #{id}
+    </select>
+    <select id="confirmId" resultType="long">
+        select user_id As userId from board where id = #{id}
+    </select>
 </mapper>

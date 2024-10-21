@@ -17,4 +17,6 @@ public interface BoardMapper {
     void updateBoard(Board board);
     // 게시글 삭제
     void deleteBoard(Long id);
+    //유저 아이디와 글쓴 사람 일치하는지 확인하는 메서드
+    Long confirmId(Long userid);
 }
