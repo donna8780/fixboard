@@ -18,7 +18,7 @@ public class DeleteBoardService {
         boardMapper.deleteBoard(id);
     }
     //유저 아이디와 글 쓴 사람 일치 하는 지 확인
-    public Long comfirmId(Long id){ //id를 받아야 게시글 작성자 id를 확인할 수 있음
+    public Long comfirmId(Long id){ //id를 받아야 게시글 작성자 id(userid)를 확인할 수 있음
 
         return boardMapper.confirmId(id);
     }

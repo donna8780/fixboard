@@ -17,7 +17,7 @@ public class CreateBoardService {
     private final UserMapper userMapper;
 
     // 게시판 등록
-    public void createBoard(CreateBoardReqDto req, User user) {
+    public void createBoard( User user,CreateBoardReqDto req) {
         boardMapper.createBoard(req.of(user.getId()));
     }
 }

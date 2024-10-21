@@ -13,10 +13,12 @@ public interface BoardMapper {
     List<Board> getBoardList();
     // 게시글 상세 조회
     Board getBoard(Long id);
-    // 게시글 업데이트
-    void updateBoard(Board board);
     // 게시글 삭제
     void deleteBoard(Long id);
     //유저 아이디와 글쓴 사람 일치하는지 확인하는 메서드
     Long confirmId(Long userid);
+    // 게시글 수정
+    void updateBoard(Board board);
+
+
 }

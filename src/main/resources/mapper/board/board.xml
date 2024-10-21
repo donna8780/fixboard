@@ -38,4 +38,10 @@
     <select id="confirmId" resultType="long">
         select user_id As userId from board where id = #{id}
     </select>
+
+    <update id="updateBoard">
+        update board set title = #{title}, content = #{content}, updated_date = #{updatedDate}
+        where id = #{id}
+    </update><!--수정 쿼리(UPDATE)는 데이터베이스에서 행을 수정하는 작업이기 때문에, 보통 리턴값은 수정된 행의 개수를 의미하는 int 타입을 사용!-->
+
 </mapper>
