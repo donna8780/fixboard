@@ -7,15 +7,14 @@ import java.time.LocalDateTime;
 // java 15 이후 나온 클래스
 public record CreateBoardReqDto(
         String title,
-        String content
+        String content,
+        String author
 ) {
-    public Board of(Long userId) {
+    public Board of() {// 클라이언트로부터 받아온 정보로 board 테이블에 행 추가 함을 위함.
         return Board.builder()
                 .title(this.title)
                 .content(this.content)
-                .userId(userId)
-                .createdDate(LocalDateTime.now())
-                .updatedDate(LocalDateTime.now())
+                .author(this.author)
                 .build();
     }
 }
