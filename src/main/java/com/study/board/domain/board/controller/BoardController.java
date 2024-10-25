@@ -78,3 +78,4 @@ public class BoardController {
             .body(getBoardListPaginationService.getBoardListPagination(pageNumber, pageSize));
     }*/
 }
+
