@@ -19,14 +19,14 @@ import org.hibernate.annotations.Comment;
 
 @Getter
 @Builder
-@Entity
+@Entity//JPA엔티티임을 나타냄
 @NoArgsConstructor//둘다 꼭 써줘야 빌터랑 엔티티가 적용됨
 @AllArgsConstructor//둘다
 @Table(name = "boards")
 
 public class Board extends BaseTimeEntity {
-    @Id //필드가 pk임을 나타냄
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//db에 엔티티 추가 시 자동으로 값이 증가
+    @Id //테이블의 기본키를 지정한다.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//db에 엔티티 추가 시 자동으로 값이 증가, 기본 키 값이 자동으로 생성
     private Long id;//인트 안댐 절대
 
     @Column(name="title")
@@ -71,7 +71,6 @@ public GetBoardRespDto of() {
 }
 
     public void updateBoard(String title, String content) {
-        // Setter 대신 update를 하기위해 필요한 값만 받아와서 update
         this.title = title;
         this.content = content;
     }

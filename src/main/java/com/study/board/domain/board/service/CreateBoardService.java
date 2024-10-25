@@ -15,5 +15,5 @@ public class CreateBoardService {
     // 게시판 등록
     public void createBoard( CreateBoardReqDto req) {
         boardRepository.save(req.of());
-    }//레파지토리해서 세이브하면 세이브댐
+    }//레파지토리해서 세이브하면 세이브됨
 }
