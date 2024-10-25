@@ -1,2 +1,8 @@
 # board
-study-community
+10/24 Mybatis -> JPA
+
+1.게시글 생성
+2. 게시글 삭제
+3. 게시글 상세조회
+4. 게시글 목록 조회
+
