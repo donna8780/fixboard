@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-  //페이지는 인터페이스로 된거 쓰기 페이지어블도 org~쓰기
+
   Page<Board> findAllByOrderByCreatedDateDesc(Pageable pageable);
 }
