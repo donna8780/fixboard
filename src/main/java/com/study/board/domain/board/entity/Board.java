@@ -1,12 +1,15 @@
 package com.study.board.domain.board.entity;
 
 import com.study.board.domain.board.dto.resp.GetBoardRespDto;
+import com.study.board.domain.user.entity.User;
 import com.study.board.global.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,25 +49,23 @@ public class Board extends BaseTimeEntity {
         this.title = title;
         this.content = content;
     }
+
+    @ManyToOne
+    // 엔티티인 board가 many, 필드인 user가 one
     //연관관계 매핑 유저아이디 기준으로 조인을 해서 가져온다 다 대 일 관계
     //유저가 일이고 게시글이 다
-    //@ManyToOne
-   // @JoinColumn(name="user_id")
+    //@ManyToOne 어노테이션은 Board 엔티티와 User 엔티티 간의 관계를 설정
+    @JoinColumn(name = "user_id")
+    private User user;
 
-/*
-    public GetBoardRespDto of(String name) {
-        return GetBoardRespDto.builder()
-                .title(this.title)
-                .content(this.content)
-                .build();
-    }*/
+
 public GetBoardRespDto of() {
-    // entity -> Dto로 변환
+    // entity를 Dto로 바꿔주는 메서드
     return GetBoardRespDto.builder()
         .id(this.id)
         .title(this.title)
         .content(this.content)
-        .author(this.author)
+        .author(this.user.getUsername())
         .createdDate(this.getCreatedDate())
         .updatedDate(this.getUpdatedDate())
         .build();
@@ -78,5 +79,7 @@ public GetBoardRespDto of() {
             .content(this.content) // 기존 내용 유지
             .author(this.author); // 기존 작성자 유지
     }
+
+
 
 }

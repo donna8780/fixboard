@@ -7,9 +7,11 @@ import com.study.board.domain.board.service.CreateBoardService;
 import com.study.board.domain.board.service.DeleteBoardService;
 import com.study.board.domain.board.service.GetBoardService;
 import com.study.board.domain.board.service.UpdateBoardService;
+import com.study.board.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/board")
 @RequiredArgsConstructor
 public class BoardController {
+
     private final CreateBoardService createBoardService;
     private final GetBoardService getBoardService;
     private final DeleteBoardService deleteBoardService;
@@ -35,17 +38,24 @@ public class BoardController {
     // 게시글 생성
     @Operation(summary = "게시판 생성", description = "게시판을 생성합니다.")
     @PostMapping
-    public ResponseEntity<CreateBoardReqDto> createBoard(@RequestBody CreateBoardReqDto req) {
+    public ResponseEntity<String> createBoard(@RequestBody CreateBoardReqDto req,
+        HttpSession session) {
 
-       try{CreateBoardReqDto response  = createBoardService.createBoard(req);
-           return ResponseEntity.status(HttpStatus.CREATED).body(response);
-       } catch (IllegalArgumentException e) {
-           // 잘못된 요청일 때
-           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."); // 상태 코드 400
-       } catch (Exception e) {
-           // 기타 예외 처리
-           throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "게시판 생성 중 오류가 발생했습니다."); // 상태 코드 500
-       }
+        try {
+            User user = (User) session.getAttribute("user");
+
+            if (user == null) {
+                return ResponseEntity.status(401).body("로그인 해주세요");
+            }
+
+            createBoardService.createBoard(req, user);
+            return ResponseEntity.status(HttpStatus.CREATED).body("게시판 생성 완료");
+
+        } catch (Exception e) {
+            // 기타 예외 처리
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "게시판 생성 중 오류가 발생했습니다."); // 상태 코드 500
+        }
 
     }
 
@@ -56,13 +66,13 @@ public class BoardController {
         try {
             GetBoardRespDto response = getBoardService.getBoard(id);
             return ResponseEntity.ok(response); // 정상 조회 시 상태 코드 200
-        }
-        catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             // 게시글을 찾을 수 없는 경우
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."); // 상태 코드 404
         } catch (Exception e) {
             // 기타 예외 처리
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 조회 중 오류가 발생했습니다."); // 상태 코드 500
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "게시글 조회 중 오류가 발생했습니다."); // 상태 코드 500
         }
     }
 
@@ -74,7 +84,8 @@ public class BoardController {
         @RequestParam(defaultValue = "0") int pageNo,
         @RequestParam(defaultValue = "10") int pageSize) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize); //PageRequest.of(pageNo, pageSize)를 통해 요청된 페이지 정보를 바탕으로 Pageable 객체를 생성
+        Pageable pageable = PageRequest.of(pageNo,
+            pageSize); //PageRequest.of(pageNo, pageSize)를 통해 요청된 페이지 정보를 바탕으로 Pageable 객체를 생성
         Page<GetBoardRespDto> listResponse = getBoardService.getBoardList(pageable);
 
         return ResponseEntity.ok(listResponse.getContent());
@@ -85,8 +96,12 @@ public class BoardController {
     //게시글 삭제
     @Operation(summary = "게시판 삭제", description = "게시판을 삭제합니다.")
     @DeleteMapping("/delete/{id}")//board의 아이디
-    public ResponseEntity<String> deleteBoard(@PathVariable Long id) {
+    public ResponseEntity<String> deleteBoard(@PathVariable Long id, HttpSession session) {
         try {
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                return ResponseEntity.status(401).body("로그인 해주세요");
+            }
             deleteBoardService.deleteBoard(id);
             return ResponseEntity.ok("게시판이 삭제되었습니다.");
         } catch (EntityNotFoundException e) {
@@ -102,21 +117,20 @@ public class BoardController {
     //게시글 수정
     @Operation(summary = "게시글 수정", description = "게시글을 수정합니다.")
     @PutMapping("/update/{id}") // board의 아이디를 입력받음
-    public ResponseEntity<UpdateBoardReqDto> updateBoard(@PathVariable Long id, @RequestBody UpdateBoardReqDto req) {
+    public ResponseEntity<String> updateBoard(@PathVariable Long id,
+        @RequestBody UpdateBoardReqDto req, HttpSession session) {
         try {
-            updateBoardService.boardUpdate(id, req); // 게시글 수정 호출
+            User user = (User) session.getAttribute("user");
 
-            UpdateBoardReqDto response = new UpdateBoardReqDto(req.title(), req.content());
-            return ResponseEntity.ok(response);
-        } catch (EntityNotFoundException e) {
-            // 게시글을 찾을 수 없는 경우
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다.");
-        } catch (Exception e) {
-            // 수정 중 예기치 않은 오류 발생
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 수정 중 오류가 발생했습니다.");
+            if (user == null) {
+                return ResponseEntity.status(401).body("로그인 해주세요");
+            }
+
+                updateBoardService.boardUpdate(id, req, user);
+                return ResponseEntity.ok().body("게시글 수정 완료!");
+            } catch(Exception e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
         }
 
-        }
-
-}
-
+    }

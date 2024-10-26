@@ -17,8 +17,13 @@ public class CreateUserService {
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
   //유저 생성
+  //매개변수 req는 사용자 생성 요청 정보가 담긴 DTO
   public void createUser(CreateUserReqDto req) {
     userRepository.save(req.of(bCryptPasswordEncoder.encode(req.password())));
+  /*req.of()->CreateUserReqDto의 of메서드를 호출해서 사용자의 정보를 새로운 User객체로 변환
+  bCryptPasswordEncoder.encode-> 이 비밀번호를 BCrypt 알고리즘을 사용하여 해시화
+  userRepository.save-> 생성된 User 객체를 데이터베이스에 저장 ,새로운 사용자가 데이터베이스에 추가되는 과정*/
+
   }
 }
 

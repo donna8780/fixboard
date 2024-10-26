@@ -37,6 +37,8 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
     }
   }
+  /*새로운 User 객체는 서비스 레이어에서 생성되고 데이터베이스에 저장되며,
+   컨트롤러는 이 객체를 반환받지 않음. 대신, 서비스 호출 후 성공 메시지나 오류 메시지를 클라이언트에 응답으로 전달*/
 
   @Operation(summary = "로그인", description = "유저 로그인")
   @PostMapping("/login")

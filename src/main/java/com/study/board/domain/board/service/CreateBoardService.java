@@ -4,6 +4,7 @@ import com.study.board.domain.board.dto.req.CreateBoardReqDto;
 import com.study.board.domain.board.dto.resp.GetBoardRespDto;
 import com.study.board.domain.board.entity.Board;
 import com.study.board.domain.board.entity.repository.BoardRepository;
+import com.study.board.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +16,14 @@ public class CreateBoardService {
 
     private final BoardRepository boardRepository;
     // 게시판 등록
-    public CreateBoardReqDto  createBoard( CreateBoardReqDto req) {
-        // 요청 DTO를 Board 엔티티로 변환
-        Board board = req.of();
-        //게시판 저장
-        boardRepository.save(board);
-        //저장된 Board 엔티티를 GetBoardRespDto로 변환하여 반환
-        return new CreateBoardReqDto(board.getTitle(), board.getContent(), board.getAuthor());    }
+    public void  createBoard( CreateBoardReqDto req, User user) {
+        boardRepository.save(req.of(user));
     }
+}
+/*
+CreateBoardReqDto req: 게시판 생성 요청 정보를 담고 있는 DTO 객체
+User user: 게시판을 작성하는 사용자의 정보. 게시판의 작성자 정보를 포함하기 위해 이 매개변수가 필요
+req.of(user)는 CreateBoardReqDto 객체를 Board 엔티티로 변환합니다.
+게시판의 작성자 정보로 user를 사용하여 게시판 객체를 생성합니다.
+boardRepository.save(...) 메서드를 호출하여 변환된 게시판 객체를 데이터베이스에 저장
+*/
