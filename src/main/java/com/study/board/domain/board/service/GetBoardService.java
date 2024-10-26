@@ -6,6 +6,11 @@ import com.study.board.domain.board.entity.repository.BoardRepository;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,26 +24,25 @@ public class GetBoardService {
 
     private final BoardRepository boardRepository;
 
+    //특정 게시글을 조회하는 메서드로, ID가 존재하지 않을 경우 예외를 던짐
     public GetBoardRespDto getBoard(Long id) {
-        return boardRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("ID가 존재하지 않습니다.")).of();
+        Board board = boardRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("ID가 존재하지 않습니다."));
+        return GetBoardRespDto.from(board);
     }
 
-    public List<GetBoardRespDto> getBoardList() {
-        List<Board> boardList = boardRepository.findAll();
+    //페이지 정보를 기반으로 게시글 목록을 반환하며, findAllByOrderByCreatedDateDesc(pageable)를 통해 생성일자 기준으로 내림차순 정렬하여 조회
+    // map(GetBoardRespDto::from)으로 엔티티를 DTO로 변환
+        public Page<GetBoardRespDto> getBoardList(Pageable pageable) {
+            return boardRepository.findAllByOrderByCreatedDateDesc(pageable)
+                .map(GetBoardRespDto::from);
+        }
 
-        return boardList.stream()
-            .map(Board::of)
-            .toList();
 
-        /*
-        boardList.stream()은 게시글 리스트를 Stream으로 변환합니다.
-        Stream: Java의 스트림 API는 컬렉션의 데이터를 처리하는 데 유용.
-        .map(Board::of)는 Board 객체를 GetBoardRespDto로 변환합니다.
-        **Board::of**는 Board 클래스의 of() 메서드를 사용하여 Board 객체를 GetBoardRespDto로 변환.
-         이 방식은 메서드 참조라 불림.
-        .toList()는 변환된 스트림을 다시 리스트(List) 형태로 변환하여 반환.
 
-        */
+    public List<Board> getBoardListSorted(){
+        return boardRepository.findAll(Sort.by(Direction.ASC, "title"));
+        //제목 기준으로 오름차순으로 정렬된 게시글 목록을 가져옵니다.
+        // 그러나 페이지네이션이 적용되지 않아 전체 데이터를 불러오게 됨.
     }
-}
+    }

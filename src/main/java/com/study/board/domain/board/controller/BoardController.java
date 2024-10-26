@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +25,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/board")
 @RequiredArgsConstructor
-
 public class BoardController {
     private final CreateBoardService createBoardService;
     private final GetBoardService getBoardService;
@@ -65,24 +67,20 @@ public class BoardController {
     }
 
 
-
-    //게시글 목록 조회
+    // 게시글 목록 조회
     @Operation(summary = "게시판 목록 조회", description = "게시판의 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<List<GetBoardRespDto>> getBoardList() {
+    public ResponseEntity<List<GetBoardRespDto>> getBoardList(
+        @RequestParam(defaultValue = "0") int pageNo,
+        @RequestParam(defaultValue = "10") int pageSize) {
 
-        try{
-            List<GetBoardRespDto> listResponse = getBoardService.getBoardList();
-            return ResponseEntity.ok(listResponse); // 정상 조회 시 상태 코드 200과 함께 목록 반환
-        }
-        catch (EntityNotFoundException e) {
-            // 데이터가 존재하지 않을 때
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글 목록을 찾을 수 없습니다.");
-        } catch (Exception e) {
-            // 기타 예외 처리
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "게시글 목록 조회 중 오류가 발생했습니다.");
-        }
+        Pageable pageable = PageRequest.of(pageNo, pageSize); //PageRequest.of(pageNo, pageSize)를 통해 요청된 페이지 정보를 바탕으로 Pageable 객체를 생성
+        Page<GetBoardRespDto> listResponse = getBoardService.getBoardList(pageable);
+
+        return ResponseEntity.ok(listResponse.getContent());
+        //listResponse.getContent()로 실제 데이터 목록을 반환
     }
+
 
     //게시글 삭제
     @Operation(summary = "게시판 삭제", description = "게시판을 삭제합니다.")
@@ -120,15 +118,5 @@ public class BoardController {
 
         }
 
-
-
-/*    @Operation(summary = "페이지네이션", description = "게시글을 목록")
-    @GetMapping("/page")
-    public ResponseEntity<?> getBoardListPagination(
-        @RequestParam(name = "pageNumber") int pageNumber,
-        @RequestParam(name = "pageSize") int pageSize) {
-        return ResponseEntity.ok()
-            .body(getBoardListPaginationService.getBoardListPagination(pageNumber, pageSize));
-    }*/
 }
 
