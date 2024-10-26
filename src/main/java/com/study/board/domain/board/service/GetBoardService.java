@@ -20,17 +20,8 @@ public class GetBoardService {
     private final BoardRepository boardRepository;
 
     public GetBoardRespDto getBoard(Long id) {
-
-        Optional<Board> optionalBoard = boardRepository.findById(id);
-        /*JPA에서 제공하는 findById() 메서드는 **Optional<T>**를 반환*/
-
-        if (optionalBoard.isPresent()) {
-            // (isPresent()가 true): optionalBoard.get()을 사용하여 Optional 안에 있는 Board 객체를 꺼내옵니다.
-            return optionalBoard.get().of();
-        } else {
-            throw new NoSuchElementException("해당 ID와 일치하는 게시글이 존재하지 않습니다.");
-            // NoSuchElementException 예외를 던져 게시글이 존재하지 않는다는 메시지를 보냅니다.
-        }
+        return boardRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("ID가 존재하지 않습니다.")).of();
     }
 
     public List<GetBoardRespDto> getBoardList() {

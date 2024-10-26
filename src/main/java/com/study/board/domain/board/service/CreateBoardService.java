@@ -1,6 +1,8 @@
 package com.study.board.domain.board.service;
 
 import com.study.board.domain.board.dto.req.CreateBoardReqDto;
+import com.study.board.domain.board.dto.resp.GetBoardRespDto;
+import com.study.board.domain.board.entity.Board;
 import com.study.board.domain.board.entity.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,11 @@ public class CreateBoardService {
 
     private final BoardRepository boardRepository;
     // 게시판 등록
-    public void createBoard( CreateBoardReqDto req) {
-        boardRepository.save(req.of());
-    }//레파지토리해서 세이브하면 세이브됨
-}
+    public CreateBoardReqDto  createBoard( CreateBoardReqDto req) {
+        // 요청 DTO를 Board 엔티티로 변환
+        Board board = req.of();
+        //게시판 저장
+        boardRepository.save(board);
+        //저장된 Board 엔티티를 GetBoardRespDto로 변환하여 반환
+        return new CreateBoardReqDto(board.getTitle(), board.getContent(), board.getAuthor());    }
+    }

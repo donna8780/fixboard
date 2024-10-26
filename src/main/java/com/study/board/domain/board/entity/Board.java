@@ -70,9 +70,13 @@ public GetBoardRespDto of() {
         .build();
 }
 
-    public void updateBoard(String title, String content) {
-        this.title = title;
-        this.content = content;
+    // toBuilder 메서드 추가
+    public BoardBuilder toBuilder() {
+        return builder()
+            .id(this.id) // 기존 ID 유지
+            .title(this.title) // 기존 제목 유지
+            .content(this.content) // 기존 내용 유지
+            .author(this.author); // 기존 작성자 유지
     }
 
 }
