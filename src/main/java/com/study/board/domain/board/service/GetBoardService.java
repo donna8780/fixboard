@@ -34,7 +34,7 @@ public class GetBoardService {
     //페이지 정보를 기반으로 게시글 목록을 반환하며, findAllByOrderByCreatedDateDesc(pageable)를 통해 생성일자 기준으로 내림차순 정렬하여 조회
     // map(GetBoardRespDto::from)으로 엔티티를 DTO로 변환
         public Page<GetBoardRespDto> getBoardList(Pageable pageable) {
-            return boardRepository.findAllByOrderByCreatedDateDesc(pageable)
+            return boardRepository.findAllBoards(pageable)
                 .map(GetBoardRespDto::from);
         }
 

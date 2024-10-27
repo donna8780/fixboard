@@ -23,7 +23,7 @@ public class LoginUserService {
   //로그인 기능
   public void loginUser(LoginReqDto req, HttpSession session){
     User byUsername = userRepository.findByUsername(req.username());
-    //findByUsername : 주어진 사용자 이름에 해당하는 사용자를 데이터베이스에서 찾아오는 기능
+
 
     //username이 없으면 로그인 실패
     //matches 메서드는 입력된 비밀번호를 해시화하여 데이터베이스에 저장된 비밀번호와 비교.

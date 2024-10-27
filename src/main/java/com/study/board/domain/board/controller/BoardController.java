@@ -3,6 +3,8 @@ package com.study.board.domain.board.controller;
 import com.study.board.domain.board.dto.req.CreateBoardReqDto;
 import com.study.board.domain.board.dto.req.UpdateBoardReqDto;
 import com.study.board.domain.board.dto.resp.GetBoardRespDto;
+import com.study.board.domain.board.entity.Board;
+import com.study.board.domain.board.service.BoardListService;
 import com.study.board.domain.board.service.CreateBoardService;
 import com.study.board.domain.board.service.DeleteBoardService;
 import com.study.board.domain.board.service.GetBoardService;
@@ -33,6 +35,7 @@ public class BoardController {
     private final GetBoardService getBoardService;
     private final DeleteBoardService deleteBoardService;
     private final UpdateBoardService updateBoardService;
+    private final BoardListService boardListService;
 
 
     // 게시글 생성
@@ -137,5 +140,17 @@ public class BoardController {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         }
+
+    @Operation(summary = "사용자의 게시물 목록 페이지네이션 조회")
+    @GetMapping("/user")
+    public ResponseEntity<Page<Board>> getBoardsByUsername(
+        @RequestParam String username,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size); // 페이지 요청 생성
+        Page<Board> boards = boardListService.getBoardByUsername(username, pageable);
+        return ResponseEntity.ok(boards); // 페이지네이션된 결과 반환
+    }
 
     }
