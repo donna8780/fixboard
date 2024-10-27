@@ -15,12 +15,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-<<<<<<< HEAD
-
 
 #mybatis:
 #  mapper-locations: classpath:mapper/**/*.xml
-=======
-#mybatis:
-#  mapper-locations: classpath:mapper/*.xml
->>>>>>> 34b6b816af2a047468fd1ba4b49de9b85cd414ca
+
