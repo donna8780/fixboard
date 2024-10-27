@@ -68,16 +68,21 @@ public class BoardController {
             return ResponseEntity.ok(response); // 정상 조회 시 상태 코드 200
         } catch (EntityNotFoundException e) {
             // 게시글을 찾을 수 없는 경우
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."); // 상태 코드 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(GetBoardRespDto.builder()
+                    .message("게시글을 찾을 수 없습니다.") // 에러 메시지 추가
+                    .build());
         } catch (Exception e) {
             // 기타 예외 처리
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "게시글 조회 중 오류가 발생했습니다."); // 상태 코드 500
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(GetBoardRespDto.builder()
+                    .message("게시글 조회 중 오류가 발생했습니다.") // 에러 메시지 추가
+                    .build());
         }
     }
 
 
-    // 게시글 목록 조회
+    // 게시글 목록 조회(페이지네이션)
     @Operation(summary = "게시판 목록 조회", description = "게시판의 목록을 조회합니다.")
     @GetMapping("/list")
     public ResponseEntity<List<GetBoardRespDto>> getBoardList(

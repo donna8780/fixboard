@@ -11,7 +11,8 @@ public record GetBoardRespDto(
     String content,
     String author,
     LocalDateTime createdDate,
-    LocalDateTime updatedDate
+    LocalDateTime updatedDate,
+    String message // 성공 메시지 추가
     // 결과로 보여줄 필드
 ) {
 
@@ -24,9 +25,13 @@ public record GetBoardRespDto(
         .id(board.getId())
         .title(board.getTitle())
         .content(board.getContent())
-        .author("test")
+        .author(board.getUser().getUsername())
+        //실제 작성자의 username을 가져옴
+        //Board 엔티티와 User 엔티티는 user_id를 통해 참조 관계.
+        // 이를 통해 Board 객체가 User 객체의 정보를 접근할 수 있다
         .createdDate(board.getCreatedDate())
         .updatedDate(board.getUpdatedDate())
+        .message("게시글 조회에 성공했습니다.") // 기본 메시지 설정
         .build();
   }
 }

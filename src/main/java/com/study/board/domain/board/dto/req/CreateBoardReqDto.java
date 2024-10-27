@@ -19,4 +19,5 @@ public record CreateBoardReqDto(
     }
 }
 /*CreateBoardReqDto에서 게시판을 생성하기 위해 of 메서드를 호출함으로써,
- 클라이언트가 보낸 데이터(title, content)와 함께 게시판 작성자 정보(user)를 결합하여 Board 객체를 생성*/
+ 클라이언트가 보낸 데이터(title, content)와 함께 게시판 작성자 정보(user)를
+ 결합하여 Board 엔티티를 생성*/

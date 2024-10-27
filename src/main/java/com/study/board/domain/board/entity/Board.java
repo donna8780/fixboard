@@ -55,30 +55,10 @@ public class Board extends BaseTimeEntity {
     //연관관계 매핑 유저아이디 기준으로 조인을 해서 가져온다 다 대 일 관계
     //유저가 일이고 게시글이 다
     //@ManyToOne 어노테이션은 Board 엔티티와 User 엔티티 간의 관계를 설정
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_id") // 중요!!!!Board의 user_id는 User의 기본키(id)를 참조하는 외래키
+    private User user;// user 필드는 Board 객체가 참조하는 User 객체를 의미
+    // 각 게시글(Board)은 작성자(User)를 가리키며, 이로 인해 특정 User가 작성한 게시글 목록을 쉽게 조회
 
-
-public GetBoardRespDto of() {
-    // entity를 Dto로 바꿔주는 메서드
-    return GetBoardRespDto.builder()
-        .id(this.id)
-        .title(this.title)
-        .content(this.content)
-        .author(this.user.getUsername())
-        .createdDate(this.getCreatedDate())
-        .updatedDate(this.getUpdatedDate())
-        .build();
-}
-
-    // toBuilder 메서드 추가
-    public BoardBuilder toBuilder() {
-        return builder()
-            .id(this.id) // 기존 ID 유지
-            .title(this.title) // 기존 제목 유지
-            .content(this.content) // 기존 내용 유지
-            .author(this.author); // 기존 작성자 유지
-    }
 
 
 
